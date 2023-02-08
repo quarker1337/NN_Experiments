@@ -88,7 +88,12 @@ class TetrisGame:
             binary_representation2 = "".join(binary_strings2)
             next_shape_result = float(binary_representation2)
 
-            inputs = (grid_result, piece_shape_result, next_shape_result, score)
+            new_grid = [int(sum(T)>0) for T in flattened_list]
+            inputs = new_grid + current_piece.vector + next_piece.vector
+
+            #
+            # 
+            # inputs = (grid_result, piece_shape_result, next_shape_result, score)
             output = net.activate(inputs)
             if output[0] > 1:
                 current_piece.x -= 1
@@ -155,8 +160,8 @@ def eval_genomes(genomes, config):
 
 
 def run_neat(config):
-    p = neat.Checkpointer.restore_checkpoint('neat-checkpoint-149')
-    #p = neat.Population(config)
+    #p = neat.Checkpointer.restore_checkpoint('neat-checkpoint-149')
+    p = neat.Population(config)
     p.add_reporter(neat.StdOutReporter(True))
     stats = neat.StatisticsReporter()
     p.add_reporter(stats)
