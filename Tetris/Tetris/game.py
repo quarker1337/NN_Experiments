@@ -140,13 +140,13 @@ shape_colors = [(0, 255, 0), (255, 0, 0), (0, 255, 255), (255, 255, 0), (255, 16
 
 
 class Piece(object):
-    def __init__(self, x, y, shape):
+    def __init__(self, x, y, shape, rotation=0):
         self.x = x
         self.y = y
         self.idx = shapes.index(shape)
         self.shape = shape
         self.color = shape_colors[shapes.index(shape)]
-        self.rotation = 0
+        self.rotation = rotation
 
         v = [0]*7
         v[self.idx] = 1
@@ -191,8 +191,6 @@ def valid_space(shape, grid):
             if pos[1] > -1:
                 return False
     return True
-
-
 
 def check_lost(positions):
     for pos in positions:

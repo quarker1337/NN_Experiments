@@ -1,6 +1,6 @@
 import pygame
 import Tetris.game as game
-from Tetris.game import max_score,create_grid,get_shape,convert_shape_format,draw_window,draw_next_shape,draw_text_middle,check_lost,valid_space, clear_rows, update_score
+from Tetris.game import max_score,create_grid,get_shape,convert_shape_format,draw_window,draw_next_shape,draw_text_middle,check_lost,valid_space, clear_rows, update_score, Piece
 import neat
 import os
 import pickle
@@ -58,9 +58,11 @@ class TetrisGame:
 
             if fall_time / 1000 > fall_speed:
                 fall_time = 0
-                current_piece.y += 1
-                if not (valid_space(current_piece, grid)) and current_piece.y > 0:
-                    current_piece.y -= 1
+                #proposed_y = current_piece.y + 1
+                proposed_piece = Piece(current_piece.x, current_piece.y + 1, current_piece.shape, current_piece.rotation)
+                if valid_space(proposed_piece, grid):
+                    current_piece = proposed_piece
+                else:
                     change_piece = True
 
             for event in pygame.event.get():
@@ -94,23 +96,21 @@ class TetrisGame:
             #
             # 
             # inputs = (grid_result, piece_shape_result, next_shape_result, score)
+            lock_rotate = False
             output = net.activate(inputs)
+            new_x, new_y, new_rotation = current_piece.x, current_piece.y, current_piece.rotation
             if output[0] > 1:
-                current_piece.x -= 1
-                if not (valid_space(current_piece, grid)):
-                    current_piece.x += 1
+                new_x -= 1
             if output[1] > 1:
-                current_piece.x += 1
-                if not (valid_space(current_piece, grid)):
-                    current_piece.x -= 1
+                new_x += 1
             if output[2] > 1:
-                current_piece.y += 1
-                if not (valid_space(current_piece, grid)):
-                    current_piece.y -= 1
-            if output[3] > 1:
-                current_piece.rotation += 1
-                if not (valid_space(current_piece, grid)):
-                    current_piece.rotation -= current_piece.rotation - 1 % len(current_piece.shape)
+                new_y += 1
+            if output[3] > 1 and not lock_rotate:
+                lock_rotate = True
+                new_rotation = (new_rotation + 1) % len(current_piece.shape)
+                if valid_space(Piece(new_x, new_y, current_piece.shape, new_rotation), grid):
+                    current_piece.x, current_piece.y, current_piece.rotation = new_x, new_y, new_rotation
+                lock_rotate = False
 
             shape_pos = convert_shape_format(current_piece)
 
@@ -118,7 +118,7 @@ class TetrisGame:
                 try:
                     x, y = shape_pos[i]
                     if y > -1:
-                        if x < 0 or x >= 9:
+                        if x < 0 or x >= 10:
                             continue
                         grid[y][x] = current_piece.color
                         continue
