@@ -139,13 +139,13 @@ class TetrisGame:
             draw_window(win, grid, score, last_score)
             draw_next_shape(next_piece, win)
             pygame.display.update()
+            self.calculate_fitness(genome, score, piece_counter)
             if check_lost(locked_positions):
-                draw_text_middle(win, "YOU LOST!", 80, (255, 255, 255))
+                draw_text_middle(win, "AI STUPIDO!", 80, (255, 255, 255))
                 pygame.display.update()
                 pygame.time.delay(150)
                 run = False
                 update_score(score)
-                self.calculate_fitness(genome, score, piece_counter)
     #pygame.display.quit()
     def calculate_fitness(self, genome, score, piece_counter):
         genome.fitness = (score*100) + piece_counter
