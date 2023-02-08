@@ -40,7 +40,7 @@ class TetrisGame:
         clock = pygame.time.Clock()
         fall_time = 0
         # fall_speed = 0.27 for normal view
-        fall_speed = 0.01
+        fall_speed = 0.1
         level_time = 0
         score = 0
         piece_counter = 0
@@ -57,13 +57,16 @@ class TetrisGame:
                     level_time -= 0.005
 
             if fall_time / 1000 > fall_speed:
+                lock_rotate = True
                 fall_time = 0
                 #proposed_y = current_piece.y + 1
                 proposed_piece = Piece(current_piece.x, current_piece.y + 1, current_piece.shape, current_piece.rotation)
                 if valid_space(proposed_piece, grid):
                     current_piece = proposed_piece
+                    lock_rotate = False
                 else:
                     change_piece = True
+                    lock_rotate = False
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
