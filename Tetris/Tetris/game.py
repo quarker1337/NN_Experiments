@@ -202,7 +202,7 @@ def check_lost(positions):
     return False
 
 def get_shape():
-    return Piece(5, 0, shapes[3]) # Return SquareShape
+    return Piece(5, 0, shapes[3] if random.random() < 0.5 else shapes[2]) # Return SquareShape
     #return Piece(5, 0, random.choice(shapes))
 
 
