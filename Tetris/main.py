@@ -40,7 +40,7 @@ class TetrisGame:
         clock = pygame.time.Clock()
         fall_time = 0
         # fall_speed = 0.27 for normal view
-        fall_speed = 0.1
+        fall_speed = 0.005
         level_time = 0
         score = 0
         piece_counter = 0
@@ -143,7 +143,7 @@ class TetrisGame:
             draw_next_shape(next_piece, win)
             pygame.display.update()
             self.calculate_fitness(genome, score, piece_counter)
-            if score > 10000:
+            if score > 5000:
                 draw_text_middle(win, "AI WINS!", 80, (255, 255, 255))
                 pygame.display.update()
                 pygame.time.delay(150)
@@ -157,7 +157,7 @@ class TetrisGame:
                 update_score(score)
     #pygame.display.quit()
     def calculate_fitness(self, genome, score, piece_counter):
-        genome.fitness = (score*100) + piece_counter
+        genome.fitness = score + piece_counter
         #print(f"Debug: Genome Fitness in calculate_fitness: {genome.fitness}")
 
 
@@ -169,8 +169,8 @@ def eval_genomes(genomes, config):
 
 
 def run_neat(config):
-    p = neat.Checkpointer.restore_checkpoint('neat-checkpoint-2')
-    #p = neat.Population(config)
+    #p = neat.Checkpointer.restore_checkpoint('neat-checkpoint-2')
+    p = neat.Population(config)
     p.add_reporter(neat.StdOutReporter(True))
     stats = neat.StatisticsReporter()
     p.add_reporter(stats)
