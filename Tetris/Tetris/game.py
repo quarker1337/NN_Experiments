@@ -143,9 +143,14 @@ class Piece(object):
     def __init__(self, x, y, shape):
         self.x = x
         self.y = y
+        self.idx = shapes.index(shape)
         self.shape = shape
         self.color = shape_colors[shapes.index(shape)]
         self.rotation = 0
+
+        v = [0]*7
+        v[self.idx] = 1
+        self.vector = v
 
 
 
@@ -197,7 +202,8 @@ def check_lost(positions):
     return False
 
 def get_shape():
-    return Piece(5, 0, random.choice(shapes))
+    return Piece(5, 0, shapes[3]) # Return SquareShape
+    #return Piece(5, 0, random.choice(shapes))
 
 
 def draw_text_middle(surface, text, size, color):
@@ -275,7 +281,7 @@ def draw_window(surface, grid, score=0, last_score=0):
 
     pygame.font.init()
     font = pygame.font.SysFont('comicsans', 60)
-    label = font.render('Tetris', 1, (255, 255, 255))
+    label = font.render('Tetris AI', 1, (255, 255, 255))
 
     surface.blit(label, (top_left_x + play_width / 2 - (label.get_width() / 2), 30))
 

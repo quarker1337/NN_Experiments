@@ -88,7 +88,12 @@ class TetrisGame:
             binary_representation2 = "".join(binary_strings2)
             next_shape_result = float(binary_representation2)
 
-            inputs = (grid_result, piece_shape_result, next_shape_result, score)
+            new_grid = [int(sum(T)>0) for T in flattened_list]
+            inputs = new_grid + current_piece.vector + next_piece.vector
+
+            #
+            # 
+            # inputs = (grid_result, piece_shape_result, next_shape_result, score)
             output = net.activate(inputs)
             if output[0] > 1:
                 current_piece.x -= 1
@@ -134,13 +139,13 @@ class TetrisGame:
             draw_window(win, grid, score, last_score)
             draw_next_shape(next_piece, win)
             pygame.display.update()
+            self.calculate_fitness(genome, score, piece_counter)
             if check_lost(locked_positions):
-                draw_text_middle(win, "YOU LOST!", 80, (255, 255, 255))
+                draw_text_middle(win, "AI STUPIDO!", 80, (255, 255, 255))
                 pygame.display.update()
                 pygame.time.delay(150)
                 run = False
                 update_score(score)
-                self.calculate_fitness(genome, score, piece_counter)
     #pygame.display.quit()
     def calculate_fitness(self, genome, score, piece_counter):
         genome.fitness = (score*100) + piece_counter
@@ -155,8 +160,8 @@ def eval_genomes(genomes, config):
 
 
 def run_neat(config):
-    p = neat.Checkpointer.restore_checkpoint('neat-checkpoint-149')
-    #p = neat.Population(config)
+    #p = neat.Checkpointer.restore_checkpoint('neat-checkpoint-149')
+    p = neat.Population(config)
     p.add_reporter(neat.StdOutReporter(True))
     stats = neat.StatisticsReporter()
     p.add_reporter(stats)
